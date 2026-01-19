@@ -149,13 +149,16 @@ app.post("/chat", (req, res) => {
   // store
   if (intent) lastIntentBySession.set(sessionId, intent);
 
-  // 3) If intent unknown -> ask ONE clarifying question (not looping)
-  if (!intent) {
-    return res.json({
-      reply:
-        "Rozumiem 🙂 Aby som ti odporučila presne produkt s linkom, vyber prosím jednu možnosť:\n1) stres/spánok\n2) energia\n3) focus/mozog\n4) imunita\n5) keto\n6) proteín\n7) testosterón\n8) CBD",
-    });
-  }
+  // 3) If intent unknown -> respond like real advisor (NO MENU)
+if (!intent) {
+  return res.json({
+    reply:
+      "Rozumiem 🙂 Skús mi prosím povedať trochu viac, aby som ti vedela poradiť čo najpresnejšie.\n\n" +
+      "👉 Ide ti skôr o energiu, lepší spánok, stres, sústredenie alebo niečo iné?\n" +
+      "👉 Alebo hľadáš konkrétny typ produktu (napr. instantná mushroom káva, bez kofeínu, keto…)?"
+  });
+}
+
 
   // 4) Recommend product for intent
   const product = pickProductForIntent(intent);
