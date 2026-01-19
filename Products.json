@@ -1,0 +1,156 @@
+[
+  {
+    "id": "good-mood-stress-ground",
+    "name": "Good Mood & Stress – mletá káva",
+    "url": "https://anilab.sk/produkt/good-mood-stress-mleta-kava/?v=0b3b97fa6688",
+    "tags": ["stres", "úzkosť", "nervy", "relax", "večer", "spánok", "pohoda"],
+    "pitch": "Na stres a upokojenie – ideálna na poobede/večer."
+  },
+  {
+    "id": "good-mood-stress-beans",
+    "name": "Good Mood & Stress – zrnková káva",
+    "url": "https://anilab.sk/produkt/good-mood-stress-zrnkova-kava/?v=0b3b97fa6688",
+    "tags": ["stres", "úzkosť", "nervy", "relax", "pohoda"],
+    "pitch": "Pohoda a lepšia nálada – verzia pre milovníkov zrnkovej kávy."
+  },
+  {
+    "id": "immune-energy-ground",
+    "name": "Immune Support & Energy – mletá káva",
+    "url": "https://anilab.sk/produkt/immune-support-energy-mleta-kava/?v=0b3b97fa6688",
+    "tags": ["imunita", "energia", "únava", "zima", "choroba", "rano"],
+    "pitch": "Imunita + energia – dobrá voľba na ráno a do sezóny."
+  },
+  {
+    "id": "immune-energy-beans",
+    "name": "Immune Support & Energy – zrnková káva",
+    "url": "https://anilab.sk/produkt/immune-support-energy-zrnkova-kava/?v=0b3b97fa6688",
+    "tags": ["imunita", "energia", "únava", "rano"],
+    "pitch": "Imunita + energia – zrnková verzia."
+  },
+  {
+    "id": "mental-focus-ground",
+    "name": "Mental Focus & Energy – mletá káva",
+    "url": "https://anilab.sk/produkt/mental-focus-energy-mleta-kava/?v=0b3b97fa6688",
+    "tags": ["focus", "sústredenie", "práca", "štúdium", "energia", "mozog"],
+    "pitch": "Sústredenie + energia – do práce, školy, výkon."
+  },
+  {
+    "id": "mental-focus-beans",
+    "name": "Mental Focus & Energy – zrnková káva",
+    "url": "https://anilab.sk/produkt/mental-focus-energy-zrnkova/?v=0b3b97fa6688",
+    "tags": ["focus", "sústredenie", "práca", "štúdium", "energia", "mozog"],
+    "pitch": "Sústredenie + energia – zrnková verzia."
+  },
+  {
+    "id": "brain-support-beans",
+    "name": "Brain Support & Energy – zrnková káva",
+    "url": "https://anilab.sk/produkt/brain-support-energy-coffee-beans/?v=0b3b97fa6688",
+    "tags": ["mozog", "pamäť", "focus", "energia", "produktívnosť"],
+    "pitch": "Mozog + výkon – ideálne keď potrebuješ maximálnu mentálnu výkonnosť."
+  },
+  {
+    "id": "brain-support-ground",
+    "name": "Brain Support & Energy – mletá káva",
+    "url": "https://anilab.sk/produkt/brain-support-energy-coffee-mleta/?v=0b3b97fa6688",
+    "tags": ["mozog", "pamäť", "focus", "energia", "produktívnosť"],
+    "pitch": "Mozog + výkon – mletá verzia."
+  },
+  {
+    "id": "testosterone-booster-ground-1",
+    "name": "Testosterone Booster – mletá káva (verzia 1)",
+    "url": "https://anilab.sk/produkt/testosterone-booster-mleta-kava/?v=0b3b97fa6688",
+    "tags": ["testosterón", "mužský výkon", "energia", "motivácia", "libido", "gym"],
+    "pitch": "Pre mužský výkon, energiu a drive – ideálne pre tréning."
+  },
+  {
+    "id": "testosterone-booster-ground-2",
+    "name": "Testosterone Booster – mletá káva (verzia 2)",
+    "url": "https://anilab.sk/produkt/testosterone-booster-mleta-kava-2/?v=0b3b97fa6688",
+    "tags": ["testosterón", "mužský výkon", "energia", "motivácia", "libido", "gym"],
+    "pitch": "Alternatívna verzia Testosterone Booster – rovnaký cieľ: výkon a drive."
+  },
+  {
+    "id": "neonixo-coffee",
+    "name": "NEONIXO – funkčná káva s hubami a nootropikami",
+    "url": "https://anilab.sk/produkt/neonixo-funkcna-kava-s-hubami-a-nootropikami/?v=0b3b97fa6688",
+    "tags": ["nootropiká", "focus", "energia", "mozog", "game changer", "výkon"],
+    "pitch": "High-performance káva: energia + fokus (nootropiká)."
+  },
+  {
+    "id": "keto-reishi-ground",
+    "name": "Keto Reishi BIO – mletá káva (MCT, maca, matcha, stevia)",
+    "url": "https://anilab.sk/produkt/keto-reishi-bio-mleta-kava-s-mct-olej-maca-matcha-stevia-100g-plechovka-anilab-nalicek-4-kav/?v=0b3b97fa6688",
+    "tags": ["keto", "MCT", "lowcarb", "energia", "chudnutie", "metabolizmus"],
+    "pitch": "Keto/low-carb energia: MCT + funkčné zložky."
+  },
+  {
+    "id": "collagen-reishi-ground",
+    "name": "Kolagén + Reishi BIO – mletá káva (MCT, cordyceps, ashwagandha, LM, guarana)",
+    "url": "https://anilab.sk/produkt/kolagen-reishi-bio-mleta-kava-s-mct-olejom-cordyceps-ashwagandha-lions-mane-guarana-100g-plechovka-anilab-balicek-4-kav/?v=0b3b97fa6688",
+    "tags": ["kolagén", "pleť", "vlasy", "nechty", "energia", "ženy", "beauty"],
+    "pitch": "Beauty + výkon: kolagén pre pleť/vlasy + energia."
+  },
+  {
+    "id": "collagen-pineapple-ground",
+    "name": "Kolagén Ananás – mletá káva (pineapple collagen)",
+    "url": "https://anilab.sk/produkt/kolagen-ananasova-mleta-kava-s-reishi-cordyceps-ashwagandha-lions-mane-mct-coconut-pineapple-collagen/?v=0b3b97fa6688",
+    "tags": ["kolagén", "pleť", "vlasy", "nechty", "ananás", "beauty", "ženy"],
+    "pitch": "Kolagén s ananásom – chutná beauty verzia."
+  },
+  {
+    "id": "reishi-ashwagandha-ground",
+    "name": "Reishi + Ashwagandha BIO – mletá káva (plechovka 100g)",
+    "url": "https://anilab.sk/produkt/reishi-ashwagandha-bio-mleta-kava-100g-plechovka-11/?v=0b3b97fa6688",
+    "tags": ["stres", "relax", "spánok", "kortizol", "pohoda", "večer"],
+    "pitch": "Top combo na stres/kortizol – pre pohodu a kvalitnejší spánok."
+  },
+  {
+    "id": "elixir-ground",
+    "name": "ELIXIR – mletá káva (Reishi, Cordyceps, Levía hriva)",
+    "url": "https://anilab.sk/produkt/elixir-mleta-kava-reishi-cordyceps-sinensis-levia-hriva-plechovka-100g-11-zadarmo-kopia/?v=0b3b97fa6688",
+    "tags": ["energia", "focus", "mozog", "imunita", "výkon"],
+    "pitch": "Univerzál: energia + fokus + imunita."
+  },
+  {
+    "id": "reishi-honduras-ground",
+    "name": "BIO mletá káva Reishi Honduras (100% Arabica)",
+    "url": "https://anilab.sk/produkt/bio-mleta-kava-reishi-honduras-100-arabika-100g/?v=0b3b97fa6688",
+    "tags": ["reishi", "imunita", "pohoda", "kvalitná káva", "arabica"],
+    "pitch": "Čistá arabica + reishi – jednoduché a účinné."
+  },
+  {
+    "id": "matcha-latte-tubus",
+    "name": "ANi Matcha Latte – Mushroom Complex (200g tubus)",
+    "url": "https://anilab.sk/produkt/ani-matcha-latte-mushroom-complex-200g-tubus/?v=0b3b97fa6688",
+    "tags": ["matcha", "energia", "focus", "alternatíva ku káve", "latte"],
+    "pitch": "Jemná energia z matcha – super ako alternatíva ku káve."
+  },
+  {
+    "id": "matcha-vanilla-latte",
+    "name": "Matcha Vanilla Latte – Mushroom Complex",
+    "url": "https://anilab.sk/produkt/matcha-vanilla-latte-mushroom-complex-kopia/?v=0b3b97fa6688",
+    "tags": ["matcha", "vanilka", "energia", "latte", "alternatíva ku káve"],
+    "pitch": "Matcha + vanilka – jemné, chutné, funkčné."
+  },
+  {
+    "id": "protein-ice-coffee-choco",
+    "name": "Protein Ice Coffee – čokoláda",
+    "url": "https://anilab.sk/produkt/protein-ice-coffee-cokolada-anilab/?v=0b3b97fa6688",
+    "tags": ["proteín", "fitness", "svaly", "po tréningu", "čokoláda"],
+    "pitch": "Proteín + coffee vibe – ideálne po tréningu."
+  },
+  {
+    "id": "protein-ice-coffee",
+    "name": "Protein Ice Coffee – classic",
+    "url": "https://anilab.sk/produkt/protein-ice-coffee-anilab/?v=0b3b97fa6688",
+    "tags": ["proteín", "fitness", "svaly", "po tréningu"],
+    "pitch": "Proteínová ice coffee – jednoduchý výkon."
+  },
+  {
+    "id": "protein-ice-coffee-vanilla",
+    "name": "Protein Ice Coffee – vanilka",
+    "url": "https://anilab.sk/produkt/protein-ice-coffee-vanilka-anilab/?v=0b3b97fa6688",
+    "tags": ["proteín", "fitness", "svaly", "vanilka", "po tréningu"],
+    "pitch": "Vanilková proteínová ice coffee – ľahko pitná, funkčná."
+  }
+]
