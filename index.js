@@ -7,50 +7,56 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Health check
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
+// Chat endpoint
 app.post("/chat", async (req, res) => {
   try {
-    const userMessage = req.body.message;
+    const userMessage = req.body?.message;
 
-    if (!userMessage) {
+    if (!userMessage || typeof userMessage !== "string") {
       return res.status(400).json({ error: "Missing message" });
     }
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: "OPENAI_API_KEY is not set on the server" });
+    }
+
+    const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+        "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "Si priateľský AI asistent, odpovedaj po slovensky." },
-          { role: "user", content: userMessage }
-        ],
-        temperature: 0.7
-      })
+        model: "gpt-4.1-mini",
+        input: userMessage,
+      }),
     });
 
     const data = await response.json();
 
-    console.log("OPENAI RESPONSE:", JSON.stringify(data, null, 2));
+    // ak OpenAI vráti error, pošli ho čitateľne von
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: data?.error?.message || "OpenAI API error",
+        details: data,
+      });
+    }
 
-    const reply =
-      data?.choices?.[0]?.message?.content ||
-      "AI odpoveď sa nepodarilo získať.";
+    const reply = data.output_text || "AI odpoveď sa nepodarilo získať.";
 
-    res.json({ reply });
-
-  } catch (error) {
-    console.error("Chat error:", error);
-    res.status(500).json({ error: "Server error" });
+    return res.json({ reply });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error", details: String(err) });
   }
 });
 
+// Render port
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`ANILAB AI chatbot running on port ${PORT}`);
