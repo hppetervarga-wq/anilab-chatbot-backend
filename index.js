@@ -109,6 +109,10 @@ app.get("/health", (req, res) => {
     time: new Date().toISOString(),
   });
 });
+// ===== Products endpoint (debug) =====
+app.get("/products", (req, res) => {
+  res.json(PRODUCTS);
+});
 
 // ===== Main chat endpoint =====
 app.post("/chat", (req, res) => {
