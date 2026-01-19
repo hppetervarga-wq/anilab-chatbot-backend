@@ -4,16 +4,13 @@ import fetch from "node-fetch";
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Health check (aby Render nehlásil chybu)
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// Chat endpoint
 app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
@@ -26,39 +23,35 @@ app.post("/chat", async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [
-          {
-            role: "system",
-            content: "You are ANiLab AI assistant. Be helpful, concise and friendly.",
-          },
-          {
-            role: "user",
-            content: userMessage,
-          },
+          { role: "system", content: "Si priateľský AI asistent, odpovedaj po slovensky." },
+          { role: "user", content: userMessage }
         ],
-      }),
+        temperature: 0.7
+      })
     });
 
     const data = await response.json();
 
+    console.log("OPENAI RESPONSE:", JSON.stringify(data, null, 2));
+
     const reply =
       data?.choices?.[0]?.message?.content ||
-      "Sorry, no response from AI.";
+      "AI odpoveď sa nepodarilo získať.";
 
     res.json({ reply });
+
   } catch (error) {
     console.error("Chat error:", error);
     res.status(500).json({ error: "Server error" });
   }
 });
 
-// Port (Render používa PORT z env)
 const PORT = process.env.PORT || 10000;
-
 app.listen(PORT, () => {
-  console.log(`ANiLab AI chatbot running on port ${PORT}`);
+  console.log(`ANILAB AI chatbot running on port ${PORT}`);
 });
