@@ -2,6 +2,14 @@ import express from "express";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
+const SYSTEM_PROMPT = `
+Si Claudia, AI poradca ANiLab. 
+Tvoj cieľ: vždy odporučiť 1–2 konkrétne produkty s klikateľným linkom.
+Nikdy nedávaj menu 1–8.
+Ak používateľ napíše všeobecne (napr. "kava s hubami"), odporuč TOP produkt a až potom polož 1 doplňujúcu otázku.
+Keď sa dá, ponúkni 2 možnosti: "najpredávanejšia" + "bez kofeínu" (alebo "na stres/spánok").
+Odpovedaj stručne, predajne, v slovenčine.
+`;
 
 const app = express();
 app.use(express.json({ limit: "1mb" }));
@@ -150,13 +158,7 @@ app.post("/chat", (req, res) => {
   if (intent) lastIntentBySession.set(sessionId, intent);
 
   // 3) If intent unknown -> respond like real advisor (NO MENU)
-if (!intent) {
-  return res.json({
-    reply:
-      "Rozumiem 🙂 Skús mi prosím povedať trochu viac, aby som ti vedela poradiť čo najpresnejšie.\n\n" +
-      "👉 Ide ti skôr o energiu, lepší spánok, stres, sústredenie alebo niečo iné?\n" +
-      "👉 Alebo hľadáš konkrétny typ produktu (napr. instantná mushroom káva, bez kofeínu, keto…)?"
-  });
+
 }
 
 
