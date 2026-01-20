@@ -1,0 +1,8 @@
+{
+"store": {
+"currency": "EUR",
+"free_shipping_threshold": 50,
+"cash_on_delivery_fee": 1.5,
+"shipping_info_url": "https://anilab.sk/doprava-a-platba/"
+}
+}
