@@ -2,7 +2,10 @@
 "store": {
 "currency": "EUR",
 "free_shipping_threshold": 50,
-"cash_on_delivery_fee": 1.5,
-"shipping_info_url": "https://anilab.sk/doprava-a-platba/"
+"cash_on_delivery_fee": Zásielkovňa: €3.49
+Kuriérom GLS: €4.50
+Kuriérom DPD: €3.90
+DPD Pickup/Pickup Station: €2.99
+"shipping_info_url": "https://https://anilab.sk/kontrola-objednavky/"
 }
 }
