@@ -1,156 +1,348 @@
 [
   {
-    "id": "good-mood-stress-ground",
-    "name": "Good Mood & Stress – mletá káva",
+    "id": "good_mood_stress_mleta",
+    "name": "Good Mood / Stress – mletá káva",
     "url": "https://anilab.sk/produkt/good-mood-stress-mleta-kava/?v=0b3b97fa6688",
-    "tags": ["stres", "úzkosť", "nervy", "relax", "večer", "spánok", "pohoda"],
-    "pitch": "Na stres a upokojenie – ideálna na poobede/večer."
+    "category": "coffee",
+    "form": "ground",
+    "use_cases": ["stres", "relax", "spanok"],
+    "keywords": ["good mood", "stress", "stres", "relax", "spanok", "upokojenie", "kava", "mleta", "reishi", "ashwagandha"],
+    "priority": 10,
+    "short_pitch": "TOP voľba na stres a vypnutie hlavy – najmä popoludní/večer."
   },
   {
-    "id": "good-mood-stress-beans",
-    "name": "Good Mood & Stress – zrnková káva",
+    "id": "good_mood_stress_zrnkova",
+    "name": "Good Mood / Stress – zrnková káva",
     "url": "https://anilab.sk/produkt/good-mood-stress-zrnkova-kava/?v=0b3b97fa6688",
-    "tags": ["stres", "úzkosť", "nervy", "relax", "pohoda"],
-    "pitch": "Pohoda a lepšia nálada – verzia pre milovníkov zrnkovej kávy."
+    "category": "coffee",
+    "form": "beans",
+    "use_cases": ["stres", "relax", "spanok"],
+    "keywords": ["good mood", "stress", "stres", "relax", "spanok", "kava", "zrnkova", "zrnková", "reishi", "ashwagandha"],
+    "priority": 9,
+    "short_pitch": "Zrnková verzia pre ľudí, čo chcú stres riešiť, ale nechcú sa vzdať chuti kávy."
   },
   {
-    "id": "immune-energy-ground",
-    "name": "Immune Support & Energy – mletá káva",
+    "id": "immune_support_energy_mleta",
+    "name": "Immune Support / Energy – mletá káva",
     "url": "https://anilab.sk/produkt/immune-support-energy-mleta-kava/?v=0b3b97fa6688",
-    "tags": ["imunita", "energia", "únava", "zima", "choroba", "rano"],
-    "pitch": "Imunita + energia – dobrá voľba na ráno a do sezóny."
+    "category": "coffee",
+    "form": "ground",
+    "use_cases": ["energia", "imunita"],
+    "keywords": ["immune", "immunity", "imunita", "energia", "energy", "kava", "mleta", "podpora imunity", "rano"],
+    "priority": 10,
+    "short_pitch": "Ranná istota: energia + imunita – najľahšie odporúčiteľný produkt pre väčšinu ľudí."
   },
   {
-    "id": "immune-energy-beans",
-    "name": "Immune Support & Energy – zrnková káva",
+    "id": "immune_support_energy_zrnkova",
+    "name": "Immune Support / Energy – zrnková káva",
     "url": "https://anilab.sk/produkt/immune-support-energy-zrnkova-kava/?v=0b3b97fa6688",
-    "tags": ["imunita", "energia", "únava", "rano"],
-    "pitch": "Imunita + energia – zrnková verzia."
+    "category": "coffee",
+    "form": "beans",
+    "use_cases": ["energia", "imunita"],
+    "keywords": ["immune", "imunita", "energia", "kava", "zrnkova", "zrnková", "rano", "podpora imunity"],
+    "priority": 9,
+    "short_pitch": "Zrnková verzia pre ľudí, čo riešia výkon a chcú aj podporu imunity."
   },
   {
-    "id": "mental-focus-ground",
-    "name": "Mental Focus & Energy – mletá káva",
+    "id": "mental_focus_energy_mleta",
+    "name": "Mental Focus / Energy – mletá káva",
     "url": "https://anilab.sk/produkt/mental-focus-energy-mleta-kava/?v=0b3b97fa6688",
-    "tags": ["focus", "sústredenie", "práca", "štúdium", "energia", "mozog"],
-    "pitch": "Sústredenie + energia – do práce, školy, výkon."
+    "category": "coffee",
+    "form": "ground",
+    "use_cases": ["focus", "sustredenie", "energia"],
+    "keywords": ["mental focus", "focus", "sustredenie", "koncentracia", "energia", "kava", "mleta", "praca", "studium"],
+    "priority": 10,
+    "short_pitch": "Keď chceš sústredenie a čistú hlavu – ideálne na prácu a štúdium."
   },
   {
-    "id": "mental-focus-beans",
-    "name": "Mental Focus & Energy – zrnková káva",
+    "id": "mental_focus_energy_zrnkova",
+    "name": "Mental Focus / Energy – zrnková káva",
     "url": "https://anilab.sk/produkt/mental-focus-energy-zrnkova/?v=0b3b97fa6688",
-    "tags": ["focus", "sústredenie", "práca", "štúdium", "energia", "mozog"],
-    "pitch": "Sústredenie + energia – zrnková verzia."
+    "category": "coffee",
+    "form": "beans",
+    "use_cases": ["focus", "sustredenie", "energia"],
+    "keywords": ["mental focus", "focus", "sustredenie", "energia", "kava", "zrnkova", "zrnková", "koncentracia"],
+    "priority": 9,
+    "short_pitch": "Zrnková verzia pre výkon – keď chceš fokus bez kompromisov."
   },
   {
-    "id": "brain-support-beans",
-    "name": "Brain Support & Energy – zrnková káva",
+    "id": "brain_support_energy_beans",
+    "name": "Brain Support / Energy – coffee beans",
     "url": "https://anilab.sk/produkt/brain-support-energy-coffee-beans/?v=0b3b97fa6688",
-    "tags": ["mozog", "pamäť", "focus", "energia", "produktívnosť"],
-    "pitch": "Mozog + výkon – ideálne keď potrebuješ maximálnu mentálnu výkonnosť."
+    "category": "coffee",
+    "form": "beans",
+    "use_cases": ["focus", "sustredenie", "energia"],
+    "keywords": ["brain", "brain support", "mozog", "pamät", "focus", "energia", "kava", "zrnkova", "zrnková"],
+    "priority": 8,
+    "short_pitch": "Pre mozog: fokus, mentálny výkon a energia v jednej šálke."
   },
   {
-    "id": "brain-support-ground",
-    "name": "Brain Support & Energy – mletá káva",
+    "id": "brain_support_energy_ground",
+    "name": "Brain Support / Energy – mletá káva",
     "url": "https://anilab.sk/produkt/brain-support-energy-coffee-mleta/?v=0b3b97fa6688",
-    "tags": ["mozog", "pamäť", "focus", "energia", "produktívnosť"],
-    "pitch": "Mozog + výkon – mletá verzia."
+    "category": "coffee",
+    "form": "ground",
+    "use_cases": ["focus", "sustredenie", "energia"],
+    "keywords": ["brain", "mozog", "pamät", "focus", "energia", "kava", "mleta"],
+    "priority": 8,
+    "short_pitch": "Keď chceš fokus a výkon – jednoduchá mletá verzia."
   },
+
   {
-    "id": "testosterone-booster-ground-1",
-    "name": "Testosterone Booster – mletá káva (verzia 1)",
-    "url": "https://anilab.sk/produkt/testosterone-booster-mleta-kava/?v=0b3b97fa6688",
-    "tags": ["testosterón", "mužský výkon", "energia", "motivácia", "libido", "gym"],
-    "pitch": "Pre mužský výkon, energiu a drive – ideálne pre tréning."
-  },
-  {
-    "id": "testosterone-booster-ground-2",
-    "name": "Testosterone Booster – mletá káva (verzia 2)",
-    "url": "https://anilab.sk/produkt/testosterone-booster-mleta-kava-2/?v=0b3b97fa6688",
-    "tags": ["testosterón", "mužský výkon", "energia", "motivácia", "libido", "gym"],
-    "pitch": "Alternatívna verzia Testosterone Booster – rovnaký cieľ: výkon a drive."
-  },
-  {
-    "id": "neonixo-coffee",
+    "id": "neonixo_nootropics_coffee",
     "name": "NEONIXO – funkčná káva s hubami a nootropikami",
     "url": "https://anilab.sk/produkt/neonixo-funkcna-kava-s-hubami-a-nootropikami/?v=0b3b97fa6688",
-    "tags": ["nootropiká", "focus", "energia", "mozog", "game changer", "výkon"],
-    "pitch": "High-performance káva: energia + fokus (nootropiká)."
+    "category": "coffee",
+    "form": "ground",
+    "use_cases": ["focus", "energia", "vykon"],
+    "keywords": ["neonix", "neonixo", "nootropika", "focus", "energia", "vykon", "kava", "mleta"],
+    "priority": 10,
+    "short_pitch": "High-performance káva – keď chceš cítiť rozdiel hneď."
   },
+
   {
-    "id": "keto-reishi-ground",
-    "name": "Keto Reishi BIO – mletá káva (MCT, maca, matcha, stevia)",
-    "url": "https://anilab.sk/produkt/keto-reishi-bio-mleta-kava-s-mct-olej-maca-matcha-stevia-100g-plechovka-anilab-nalicek-4-kav/?v=0b3b97fa6688",
-    "tags": ["keto", "MCT", "lowcarb", "energia", "chudnutie", "metabolizmus"],
-    "pitch": "Keto/low-carb energia: MCT + funkčné zložky."
-  },
-  {
-    "id": "collagen-reishi-ground",
-    "name": "Kolagén + Reishi BIO – mletá káva (MCT, cordyceps, ashwagandha, LM, guarana)",
-    "url": "https://anilab.sk/produkt/kolagen-reishi-bio-mleta-kava-s-mct-olejom-cordyceps-ashwagandha-lions-mane-guarana-100g-plechovka-anilab-balicek-4-kav/?v=0b3b97fa6688",
-    "tags": ["kolagén", "pleť", "vlasy", "nechty", "energia", "ženy", "beauty"],
-    "pitch": "Beauty + výkon: kolagén pre pleť/vlasy + energia."
-  },
-  {
-    "id": "collagen-pineapple-ground",
-    "name": "Kolagén Ananás – mletá káva (pineapple collagen)",
-    "url": "https://anilab.sk/produkt/kolagen-ananasova-mleta-kava-s-reishi-cordyceps-ashwagandha-lions-mane-mct-coconut-pineapple-collagen/?v=0b3b97fa6688",
-    "tags": ["kolagén", "pleť", "vlasy", "nechty", "ananás", "beauty", "ženy"],
-    "pitch": "Kolagén s ananásom – chutná beauty verzia."
-  },
-  {
-    "id": "reishi-ashwagandha-ground",
-    "name": "Reishi + Ashwagandha BIO – mletá káva (plechovka 100g)",
-    "url": "https://anilab.sk/produkt/reishi-ashwagandha-bio-mleta-kava-100g-plechovka-11/?v=0b3b97fa6688",
-    "tags": ["stres", "relax", "spánok", "kortizol", "pohoda", "večer"],
-    "pitch": "Top combo na stres/kortizol – pre pohodu a kvalitnejší spánok."
-  },
-  {
-    "id": "elixir-ground",
-    "name": "ELIXIR – mletá káva (Reishi, Cordyceps, Levía hriva)",
-    "url": "https://anilab.sk/produkt/elixir-mleta-kava-reishi-cordyceps-sinensis-levia-hriva-plechovka-100g-11-zadarmo-kopia/?v=0b3b97fa6688",
-    "tags": ["energia", "focus", "mozog", "imunita", "výkon"],
-    "pitch": "Univerzál: energia + fokus + imunita."
-  },
-  {
-    "id": "reishi-honduras-ground",
-    "name": "BIO mletá káva Reishi Honduras (100% Arabica)",
-    "url": "https://anilab.sk/produkt/bio-mleta-kava-reishi-honduras-100-arabika-100g/?v=0b3b97fa6688",
-    "tags": ["reishi", "imunita", "pohoda", "kvalitná káva", "arabica"],
-    "pitch": "Čistá arabica + reishi – jednoduché a účinné."
-  },
-  {
-    "id": "matcha-latte-tubus",
-    "name": "ANi Matcha Latte – Mushroom Complex (200g tubus)",
+    "id": "matcha_latte_ani",
+    "name": "ANi Matcha Latte – Mushroom Complex (200g)",
     "url": "https://anilab.sk/produkt/ani-matcha-latte-mushroom-complex-200g-tubus/?v=0b3b97fa6688",
-    "tags": ["matcha", "energia", "focus", "alternatíva ku káve", "latte"],
-    "pitch": "Jemná energia z matcha – super ako alternatíva ku káve."
+    "category": "matcha",
+    "form": "powder",
+    "use_cases": ["energia", "focus", "alternativa_ku_kave"],
+    "keywords": ["matcha", "matcha latte", "latte", "zeleny caj", "energia", "focus", "bez kavy", "alternativa"],
+    "priority": 9,
+    "short_pitch": "Matcha ako čistá energia – ideálne, ak nechceš kávu."
   },
   {
-    "id": "matcha-vanilla-latte",
+    "id": "matcha_vanilla_latte",
     "name": "Matcha Vanilla Latte – Mushroom Complex",
     "url": "https://anilab.sk/produkt/matcha-vanilla-latte-mushroom-complex-kopia/?v=0b3b97fa6688",
-    "tags": ["matcha", "vanilka", "energia", "latte", "alternatíva ku káve"],
-    "pitch": "Matcha + vanilka – jemné, chutné, funkčné."
+    "category": "matcha",
+    "form": "powder",
+    "use_cases": ["energia", "focus", "alternativa_ku_kave"],
+    "keywords": ["matcha", "vanilla", "vanilka", "latte", "energia", "focus"],
+    "priority": 8,
+    "short_pitch": "Jemná vanilková matcha – keď chceš výkon, ale hladkú chuť."
   },
   {
-    "id": "protein-ice-coffee-choco",
+    "id": "matcha_prasok_100g",
+    "name": "Matcha prášok (100g) – doypack",
+    "url": "https://anilab.sk/produkt/matcha-prasok-100g-doypack/?v=0b3b97fa6688",
+    "category": "matcha",
+    "form": "powder",
+    "use_cases": ["energia", "focus"],
+    "keywords": ["matcha", "prášok", "energia", "focus", "zeleny caj"],
+    "priority": 7,
+    "short_pitch": "Čistá matcha – najuniverzálnejšia voľba na energiu."
+  },
+
+  {
+    "id": "protein_ice_coffee_cokolada",
     "name": "Protein Ice Coffee – čokoláda",
     "url": "https://anilab.sk/produkt/protein-ice-coffee-cokolada-anilab/?v=0b3b97fa6688",
-    "tags": ["proteín", "fitness", "svaly", "po tréningu", "čokoláda"],
-    "pitch": "Proteín + coffee vibe – ideálne po tréningu."
+    "category": "protein",
+    "form": "powder",
+    "use_cases": ["protein", "svaly", "energia"],
+    "keywords": ["protein", "ice coffee", "kava", "cokolada", "svaly", "fitness", "shake"],
+    "priority": 8,
+    "short_pitch": "Protein + coffee vibe – super po tréningu alebo namiesto snacku."
   },
   {
-    "id": "protein-ice-coffee",
+    "id": "protein_ice_coffee_classic",
     "name": "Protein Ice Coffee – classic",
     "url": "https://anilab.sk/produkt/protein-ice-coffee-anilab/?v=0b3b97fa6688",
-    "tags": ["proteín", "fitness", "svaly", "po tréningu"],
-    "pitch": "Proteínová ice coffee – jednoduchý výkon."
+    "category": "protein",
+    "form": "powder",
+    "use_cases": ["protein", "svaly", "energia"],
+    "keywords": ["protein", "ice coffee", "kava", "fitness", "shake", "svaly"],
+    "priority": 7,
+    "short_pitch": "Jednoduchý a funkčný – protein s kávovým charakterom."
   },
   {
-    "id": "protein-ice-coffee-vanilla",
+    "id": "protein_ice_coffee_vanilka",
     "name": "Protein Ice Coffee – vanilka",
     "url": "https://anilab.sk/produkt/protein-ice-coffee-vanilka-anilab/?v=0b3b97fa6688",
-    "tags": ["proteín", "fitness", "svaly", "vanilka", "po tréningu"],
-    "pitch": "Vanilková proteínová ice coffee – ľahko pitná, funkčná."
+    "category": "protein",
+    "form": "powder",
+    "use_cases": ["protein", "svaly", "energia"],
+    "keywords": ["protein", "ice coffee", "vanilka", "vanilla", "fitness", "shake", "svaly"],
+    "priority": 7,
+    "short_pitch": "Vanilková verzia – jemnejšia chuť, rovnaký výkon."
+  },
+
+  {
+    "id": "neonix_neurocaps",
+    "name": "NEONIX Neurocaps",
+    "url": "https://anilab.sk/produkt/neonix-neurocaps/?v=0b3b97fa6688",
+    "category": "capsules",
+    "form": "capsules",
+    "use_cases": ["focus", "sustredenie", "vykon"],
+    "keywords": ["neonix", "neurocaps", "kapsule", "focus", "sustredenie", "vykon", "nootropika"],
+    "priority": 9,
+    "short_pitch": "Kapsule na fokus a výkon – keď chceš boost bez kávy."
+  },
+  {
+    "id": "ani_hericium_60",
+    "name": "ANi Hericium erinaceus – 60 kapsúl",
+    "url": "https://anilab.sk/produkt/ani-hericium-erinaceus-60-kapsul/?v=0b3b97fa6688",
+    "category": "capsules",
+    "form": "capsules",
+    "use_cases": ["focus", "mozog", "pamät"],
+    "keywords": ["lions mane", "lion's mane", "hericium", "pamät", "mozog", "focus", "kapsule"],
+    "priority": 8,
+    "short_pitch": "Lion’s Mane klasika – pre mozog, pamäť a mentálnu výdrž."
+  },
+  {
+    "id": "ani_cordyceps_60",
+    "name": "ANi Cordyceps – 60 tabliet",
+    "url": "https://anilab.sk/produkt/ani-cordyceps-324g-60-tabliet/?v=0b3b97fa6688",
+    "category": "capsules",
+    "form": "tablets",
+    "use_cases": ["energia", "vykon", "vytrvalost"],
+    "keywords": ["cordyceps", "energia", "vykon", "vytrvalost", "tablety"],
+    "priority": 8,
+    "short_pitch": "Na energiu a výkon – dobré na tréning aj náročné dni."
+  },
+
+  {
+    "id": "cbd_full_spectrum_20_swisshempy",
+    "name": "SwissHempy CBD Full Spectrum 20%",
+    "url": "https://anilab.sk/produkt/swisshempy-cbd-full-spectrum-20-swisshempy/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "cbd olej", "full spectrum", "konopie", "hemp", "olej", "kvapky", "stres", "spanok", "relax", "silnejsi", "20"],
+    "priority": 10,
+    "short_pitch": "Najsilnejší bestseller – keď chceš reálne cítiť efekt na stres/spánok."
+  },
+  {
+    "id": "cbd_olej_30",
+    "name": "CBD olej 30%",
+    "url": "https://anilab.sk/produkt/cbd-olej-30/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "cbd olej", "olej", "kvapky", "konopie", "hemp", "stres", "spanok", "relax", "30", "extra silny"],
+    "priority": 9,
+    "short_pitch": "Extra silná verzia – pre ľudí, čo riešia stres/spánok intenzívne."
+  },
+  {
+    "id": "cbd_olej_25",
+    "name": "CBD olej 25%",
+    "url": "https://anilab.sk/produkt/cbd-olej-25/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "cbd olej", "olej", "kvapky", "stres", "spanok", "relax", "25"],
+    "priority": 9,
+    "short_pitch": "Silné, ale stále univerzálne – dobrý kompromis medzi 20% a 30%."
+  },
+  {
+    "id": "cbd_olej_20",
+    "name": "CBD olej 20%",
+    "url": "https://anilab.sk/produkt/cbd-olej-20/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "cbd olej", "olej", "kvapky", "stres", "spanok", "relax", "20"],
+    "priority": 10,
+    "short_pitch": "Najpredávanejšia sila – na spánok, stres a večerné upokojenie."
+  },
+  {
+    "id": "cbd_olej_15",
+    "name": "CBD olej 15%",
+    "url": "https://anilab.sk/produkt/cbd-olej-15/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "cbd olej", "olej", "kvapky", "stres", "spanok", "relax", "15"],
+    "priority": 8,
+    "short_pitch": "Stredná sila – ideál, ak začínaš alebo chceš jemnejší efekt."
+  },
+  {
+    "id": "cbd_olej_10",
+    "name": "CBD olej 10%",
+    "url": "https://anilab.sk/produkt/cbd-olej-10/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "cbd olej", "olej", "kvapky", "stres", "spanok", "relax", "10", "zaciatok"],
+    "priority": 8,
+    "short_pitch": "Jemný štart – ak chceš CBD vyskúšať bez prestrelenia."
+  },
+  {
+    "id": "cbd_full_spectrum_15",
+    "name": "CBD Full Spectrum 15%",
+    "url": "https://anilab.sk/produkt/cbd-full-spectrum-15/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "full spectrum", "konopie", "hemp", "olej", "kvapky", "stres", "spanok", "relax", "15"],
+    "priority": 8,
+    "short_pitch": "Full spectrum verzia – keď chceš širší „entourage“ efekt."
+  },
+  {
+    "id": "cbd_full_spectrum_10",
+    "name": "CBD Full Spectrum 10%",
+    "url": "https://anilab.sk/produkt/cbd-full-spectrum-10/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "full spectrum", "olej", "kvapky", "stres", "spanok", "relax", "10"],
+    "priority": 7,
+    "short_pitch": "Jemný full-spectrum štart – na vypnutie a večernú pohodu."
+  },
+  {
+    "id": "cbd_full_spectrum_5_swisshempy",
+    "name": "SwissHempy CBD Full Spectrum 5%",
+    "url": "https://anilab.sk/produkt/swisshempy-cbd-full-spectrum-5-swisshempy/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["relax", "stres"],
+    "keywords": ["cbd", "full spectrum", "5", "olej", "kvapky", "relax", "stres", "zaciatok"],
+    "priority": 6,
+    "short_pitch": "Úplne jemný štart – pre citlivejších ľudí."
+  },
+  {
+    "id": "cbd_olej_psy_macky_3",
+    "name": "CBD olej pre psov a mačky 3% (10ml)",
+    "url": "https://anilab.sk/produkt/cbd-olej-pre-psov-a-macky-3-cbd-10ml/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["pets", "relax"],
+    "keywords": ["cbd", "olej", "psy", "macky", "mačky", "zvierata", "pets", "3"],
+    "priority": 7,
+    "short_pitch": "CBD aj pre zvieratá – jemná podpora pre pohodu."
+  },
+  {
+    "id": "swiss_hempy_cbd_levandula",
+    "name": "SwissHempy CBD olej – levanduľa",
+    "url": "https://anilab.sk/produkt/swiss-hempy-cbd-olej-levandula/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["spanok", "relax", "stres"],
+    "keywords": ["cbd", "olej", "levandula", "spánok", "spanok", "relax", "stres"],
+    "priority": 7,
+    "short_pitch": "Večerná chill verzia – levanduľa + CBD = vypnutie."
+  },
+  {
+    "id": "swiss_hempy_cbd_jahoda",
+    "name": "SwissHempy CBD olej – jahoda",
+    "url": "https://anilab.sk/produkt/swiss-hempy-cbd-olej-jahoda/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["relax", "stres"],
+    "keywords": ["cbd", "olej", "jahoda", "relax", "stres"],
+    "priority": 6,
+    "short_pitch": "Príjemná chuť – dobré pre ľudí, čo nemusia klasickú konopnú arómu."
+  },
+  {
+    "id": "swiss_hempy_cbd_mentol",
+    "name": "SwissHempy CBD olej – mentol",
+    "url": "https://anilab.sk/produkt/swiss-hempy-cbd-olej-mentol/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["relax", "stres"],
+    "keywords": ["cbd", "olej", "mentol", "relax", "stres"],
+    "priority": 6,
+    "short_pitch": "Mentolová sviežosť – CBD bez ťažkej konopnej chuti."
   }
 ]
