@@ -50,6 +50,7 @@ const sessionStore = new Map(); // sessionId -> { askedOnce: boolean, lastIntent
 function getSession(sessionId) {
 if (!sessionStore.has(sessionId)) {
 sessionStore.set(sessionId, {
+mode: "",                 // "faq" | "product" | ""
 askedOnce: false,
 lastIntent: "",
 lastGoal: "",
@@ -381,9 +382,20 @@ if (goal) session.lastGoal = goal;
 // 0) FAQ odpovede (doprava/dobierka/zadarmo) - hneď a presne
 const faqReply = tryFaqAnswer(msg);
 if (faqReply) {
+session.mode = "faq";
+session.askedOnce = false;
+session.lastIntent = "order_help";
 return res.json({ reply: `Jasné 🙂 ${faqReply}` });
 }
-
+// Ak sme v FAQ režime a otázka je stále o doprave/platbe, nechoď do produktov
+if (session.mode === "faq") {
+const stillFaq = tryFaqAnswer(msg);
+if (stillFaq) {
+return res.json({ reply: `Jasné 🙂 ${stillFaq}` });
+}
+// ak už nepíše o doprave/platbe, uvoľníme režim
+session.mode = "";
+}
 // 1) PRODUCT_SEARCH: vždy odporuč hneď, bez dotazníka
 if (intent === "product_search") {
 const prods = pickTopProducts(msg, goal, session.preferredFormat, 2);
