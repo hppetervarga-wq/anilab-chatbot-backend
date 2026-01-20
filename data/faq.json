@@ -1,0 +1,18 @@
+{
+  "store": {
+    "currency": "EUR",
+    "free_shipping_threshold": 49,
+    "cash_on_delivery_fee": 1.5,
+    "shipping_info_url": "https://anilab.sk/doprava-a-platba/"
+  },
+  "answers": {
+    "free_shipping": "Doprava zdarma je pri nákupe od {free_shipping_threshold} {currency}.",
+    "cash_on_delivery": "Dobierka stojí {cash_on_delivery_fee} {currency}.",
+    "shipping_where": "Možnosti dopravy a ceny nájdeš tu: {shipping_info_url}"
+  },
+  "keywords": {
+    "free_shipping": ["doprava zdarma", "zadarmo doprava", "free shipping", "od akej sumy", "nad akú sumu", "koľko musím nakúpiť"],
+    "cash_on_delivery": ["dobierka", "na dobierku", "cash on delivery", "cod", "koľko stojí dobierka"],
+    "shipping_general": ["doprava", "dorucenie", "doručenie", "preprava", "cena dopravy", "koľko stojí doprava"]
+  }
+}
