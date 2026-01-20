@@ -95,6 +95,71 @@ if (t.includes("bez kofe") || t.includes("decaf")) return "bez_kofeinu";
 return "";
 }
 
+// ====== NOVÉ: typ produktu + smart otázka podľa typu (CBD ≠ káva) ======
+function inferTypeFromProducts(products = [], msg = "") {
+const t = normalize(msg);
+
+// ak products.json má category alebo form, použijeme to
+const cats = products.map((p) => normalize(p.category || "")).join(" ");
+const forms = products.map((p) => normalize(p.form || "")).join(" ");
+const names = products.map((p) => normalize(safeTitle(p))).join(" ");
+
+const blob = `${t} ${cats} ${forms} ${names}`;
+
+if (blob.includes("cbd") || blob.includes("hemp") || blob.includes("konop")) return "cbd";
+if (blob.includes("protein") || blob.includes("prote") || blob.includes("whey")) return "protein";
+if (blob.includes("matcha")) return "matcha";
+if (blob.includes("kava") || blob.includes("káva") || blob.includes("coffee")) return "coffee";
+if (blob.includes("kapsul") || blob.includes("caps")) return "capsules";
+if (blob.includes("caj") || blob.includes("čaj") || blob.includes("tea")) return "tea";
+
+return "general";
+}
+
+function buildSmartAsk(type, msg, goal) {
+const t = normalize(msg);
+
+if (type === "coffee") {
+if (!hasAny(t, ["instant", "mleta", "mletá", "zrnk", "bez kofe", "decaf"])) {
+return "Chceš to skôr instant / mletú / zrnkovú – alebo bez kofeínu?";
+}
+if (!goal) return "A ide ti viac o energiu, spánok, stres, focus alebo imunitu? (stačí 1 slovo)";
+return "";
+}
+
+if (type === "cbd") {
+// CBD má iné rozhodovanie – percentá, spectrum, čas užívania
+if (!hasAny(t, ["5%", "10%", "15%", "20%", "25%", "30%", "5", "10", "15", "20", "25", "30"])) {
+return "Chceš skôr jemnejšie CBD (5–10%) alebo silnejšie (15–30%)? (stačí napísať % alebo „jemné/silné“)";
+}
+if (!hasAny(t, ["full spectrum", "broad spectrum", "isolat", "izol", "izolát"])) {
+return "Preferuješ Full Spectrum alebo Broad Spectrum? (stačí 2 slová)";
+}
+if (!goal) return "Je to skôr stres, spánok, relax alebo regenerácia? (stačí 1 slovo)";
+return "";
+}
+
+if (type === "protein") {
+if (!hasAny(t, ["cokol", "čokol", "vanil", "jahod", "prichut", "príchuť"])) {
+return "Akú príchuť chceš? čokoláda / vanilka / jahoda (stačí 1 slovo)";
+}
+if (!goal) return "Chceš to skôr na svaly, chudnutie alebo regeneráciu? (stačí 1 slovo)";
+return "";
+}
+
+if (type === "matcha") {
+if (!hasAny(t, ["latte", "prášok", "prasok", "tubus", "doypack"])) {
+return "Chceš matcha latte (hotové) alebo čistý matcha prášok? (stačí 2 slová)";
+}
+return "";
+}
+
+// fallback
+if (!goal) return "Je to skôr energia, spánok, stres, focus alebo imunita? (Stačí 1 slovo)";
+return "";
+}
+// ====== KONIEC NOVÉHO BLOKU ======
+
 function extractGoal(message) {
 const t = normalize(message);
 
@@ -146,7 +211,7 @@ function tryFaqAnswer(message) {
 const t = normalize(message);
 if (!FAQ) return "";
 
-// minimálne polia, ktoré odporúčam mať v faq.json:
+// odporúčaný tvar:
 // {
 // "store": { "free_shipping_threshold": 49, "currency": "EUR", "cash_on_delivery_fee": 1.5, "shipping_info_url": "https://anilab.sk/doprava-a-platba/" }
 // }
@@ -189,19 +254,18 @@ for (const k of kws) {
 if (normalize(k) && t.includes(normalize(k))) s += 2;
 }
 
-// ===== FORMÁT: toto je kľúč, aby zrnková nezobrazila mletú =====
-// keď user explicitne povie formu, dáme tomu VEĽKÚ váhu
+// ===== FORMÁT: aby zrnková nezobrazila mletú =====
 if (preferredFormat) {
 if (preferredFormat === "bez_kofeinu") {
 if (product.caffeine === "no") s += 15;
 if (product.caffeine === "yes") s -= 6;
 } else {
 const hasFormat = formats.includes(preferredFormat);
-if (hasFormat) s += 25; // extrémne zvýhodni správny formát
-else s -= 12; // penalizuj nesprávny formát
+if (hasFormat) s += 25;
+else s -= 12;
 }
 } else {
-// pôvodné ľahké matchovanie keď ešte nepoznáme formu
+// pôvodné ľahké matchovanie
 if (t.includes("instant") && formats.includes("instant")) s += 4;
 if ((t.includes("mleta") || t.includes("mlet")) && formats.includes("mleta")) s += 3;
 if (t.includes("zrnk") && formats.includes("zrnkova")) s += 3;
@@ -220,11 +284,10 @@ return s;
 
 function pickTopProducts(message, goal, preferredFormat, limit = 2) {
 const scored = PRODUCTS
-.filter((p) => safeUrl(p)) // musí mať link
+.filter((p) => safeUrl(p))
 .map((p) => ({ p, s: scoreProduct(p, message, goal, preferredFormat) }))
 .sort((a, b) => b.s - a.s);
 
-// ak máme preferovaný formát, a TOP1 je iný formát, zober najvyšší s daným formátom
 if (preferredFormat && preferredFormat !== "bez_kofeinu") {
 const withFormat = scored.filter((x) => (x.p.formats || []).includes(preferredFormat));
 if (withFormat.length) return withFormat.slice(0, limit).map((x) => x.p);
@@ -270,13 +333,13 @@ Pravidlá:
 - Keď odporúčaš produkt, napíš názov + klikateľný link (ak ho máš).
 - Nepýtaj sa dookola. Max 1 doplňujúca otázka, potom odporuč.
 - Zdravotné tvrdenia formuluj bezpečne: "podpora", "pre pohodu", neuvádzaj liečenie chorôb.
-`;
+`.trim();
 
 const payload = {
 model: OPENAI_MODEL,
 temperature: 0.6,
 messages: [
-{ role: "system", content: system.trim() },
+{ role: "system", content: system },
 { role: "user", content: message },
 ],
 };
@@ -315,7 +378,7 @@ const intent = detectIntent(msg);
 session.lastIntent = intent;
 if (goal) session.lastGoal = goal;
 
-// 0) ORDER FAQ odpovede (doprava/dobierka/zadarmo) - hneď a presne
+// 0) FAQ odpovede (doprava/dobierka/zadarmo) - hneď a presne
 const faqReply = tryFaqAnswer(msg);
 if (faqReply) {
 return res.json({ reply: `Jasné 🙂 ${faqReply}` });
@@ -325,23 +388,21 @@ return res.json({ reply: `Jasné 🙂 ${faqReply}` });
 if (intent === "product_search") {
 const prods = pickTopProducts(msg, goal, session.preferredFormat, 2);
 
-const ask = (() => {
-// len jemná otázka, ale odporúčanie už má
-if (!hasAny(msg, ["instant", "mleta", "mletá", "zrnk", "bez kofe", "decaf"])) {
-return "Chceš to skôr instant / mletú / zrnkovú – alebo bez kofeínu?";
-}
-// keď už napísal zrnkovú/mletú, nepýtaj sa znova, radšej spýtaj cieľ
-if (!goal) {
-return "A ide ti viac o energiu, spánok, stres, focus alebo imunitu? (stačí 1 slovo)";
-}
-return "";
-})();
+// ✅ NOVÉ: otázka podľa typu (CBD ≠ coffee)
+const type = inferTypeFromProducts(prods, msg);
+const ask = buildSmartAsk(type, msg, goal || session.lastGoal || "");
+
+// closing tiež podľa typu, aby to bolo konverzné
+const closing =
+type === "cbd"
+? "Ak mi napíšeš cieľ (stres/spánok/relax) a či chceš jemné alebo silné, vyberiem ti TOP presne na mieru."
+: "Ak mi napíšeš cieľ (energia/spánok/stres/focus/imunita), doladím to na 100%.";
 
 const reply = formatReply({
-intro: "Rozumiem 🙂 Vybrala som ti najbližšie tipy podľa toho, čo píšeš:",
+intro: "Jasné 🙂 Vybrala som ti najbližšie tipy podľa toho, čo píšeš:",
 products: prods,
 ask,
-closing: "Ak mi napíšeš cieľ (energia/spánok/stres/focus/imunita), doladím to na 100%."
+closing,
 });
 
 return res.json({ reply });
@@ -354,7 +415,6 @@ const prods = pickTopProducts(msg, g, session.preferredFormat, 2);
 
 let ask = "";
 if (!session.askedOnce) {
-// ak rieši kávu, nech upresní formu; inak nech povie formu produktu
 ask = hasAny(msg, ["kava", "káva"])
 ? "Chceš to skôr instant, mletú alebo zrnkovú? (stačí jedno slovo)"
 : "Chceš to skôr kávu, čaj alebo kapsule? (stačí jedno slovo)";
@@ -365,7 +425,7 @@ const reply = formatReply({
 intro: "Jasné 🙂 Tu sú 2 rýchle odporúčania na tvoj cieľ:",
 products: prods,
 ask,
-closing: "Keď mi potvrdíš formu, vyberiem ti najpresnejší TOP produkt."
+closing: "Keď mi potvrdíš formu, vyberiem ti najpresnejší TOP produkt.",
 });
 
 return res.json({ reply });
@@ -375,7 +435,9 @@ return res.json({ reply });
 if (intent === "order_help") {
 const ai = await askOpenAI({ message: msg });
 if (ai) return res.json({ reply: ai });
-return res.json({ reply: "Napíš prosím, či riešiš dopravu, platbu alebo stav objednávky – a hneď ti poviem čo spraviť." });
+return res.json({
+reply: "Napíš prosím, či riešiš dopravu, platbu alebo stav objednávky – a hneď ti poviem čo spraviť.",
+});
 }
 
 // 4) GENERAL: aj tu odporuč aspoň bestseller + jedna otázka
@@ -391,7 +453,7 @@ const reply = formatReply({
 intro: "Aby som ti hneď pomohla, toto je najčastejšia voľba zákazníkov:",
 products: prods,
 ask: follow,
-closing: ""
+closing: "",
 });
 
 return res.json({ reply });
@@ -405,14 +467,3 @@ app.get("/", (req, res) => res.send("OK"));
 
 app.listen(PORT, () => console.log("Server running on", PORT));
 
-
-
-
-    
-  
-  
-
-   
-      
-        
-    
