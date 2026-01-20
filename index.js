@@ -2,19 +2,11 @@ import express from "express";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
-const SYSTEM_PROMPT = `
-Si Claudia, AI poradca ANiLab. 
-Tvoj cieľ: vždy odporučiť 1–2 konkrétne produkty s klikateľným linkom.
-Nikdy nedávaj menu 1–8.
-Ak používateľ napíše všeobecne (napr. "kava s hubami"), odporuč TOP produkt a až potom polož 1 doplňujúcu otázku.
-Keď sa dá, ponúkni 2 možnosti: "najpredávanejšia" + "bez kofeínu" (alebo "na stres/spánok").
-Odpovedaj stručne, predajne, v slovenčine.
-`;
 
 const app = express();
 app.use(express.json({ limit: "1mb" }));
 
-// ===== CORS (pridaj sem aj ďalšie domény ak treba) =====
+// ===== CORS (ponechaj svoje domény) =====
 app.use(
   cors({
     origin: [
@@ -28,303 +20,280 @@ app.use(
   })
 );
 
-// ===== Load products.json =====
-const PRODUCTS_PATH = path.join(process.cwd(), "products.json");
+const PORT = process.env.PORT || 10000;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
+const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
+// ===== načítanie TOP produktov =====
+const productsPath = path.join(process.cwd(), "products.json");
 let PRODUCTS = [];
-function loadProducts() {
-  try {
-    const raw = fs.readFileSync(PRODUCTS_PATH, "utf-8");
-    const data = JSON.parse(raw);
-    if (!Array.isArray(data)) throw new Error("products.json must be an array");
-    PRODUCTS = data;
-    console.log(`[products] loaded ${PRODUCTS.length} items`);
-  } catch (e) {
-    console.error("[products] failed to load products.json:", e.message);
-    PRODUCTS = [];
-  }
+try {
+  PRODUCTS = JSON.parse(fs.readFileSync(productsPath, "utf8"));
+} catch (e) {
+  console.error("Cannot read products.json:", e);
+  PRODUCTS = [];
 }
-loadProducts();
 
-// ===== helpers =====
+// ===== jednoduchá session pamäť (aby sa to necyklilo) =====
+const sessionStore = new Map(); // sessionId -> { askedOnce: boolean, lastIntent: string, lastGoal: string }
+
+function getSession(sessionId) {
+  if (!sessionStore.has(sessionId)) {
+    sessionStore.set(sessionId, { askedOnce: false, lastIntent: "", lastGoal: "" });
+  }
+  return sessionStore.get(sessionId);
+}
+
+// ===== util =====
 const normalize = (s) =>
   (s || "")
-    .toString()
     .toLowerCase()
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "");
 
-const hasAny = (text, arr) => arr.some((k) => text.includes(k));
+function hasAny(text, arr) {
+  const t = normalize(text);
+  return arr.some((w) => t.includes(normalize(w)));
+}
 
-function findByTags(preferredTags = []) {
-  if (!PRODUCTS.length) return null;
-  const tags = preferredTags.map(normalize);
+function extractGoal(message) {
+  const t = normalize(message);
 
-  // score products by tag matches
-  let best = null;
-  let bestScore = -1;
+  const goals = [
+    { key: "sleep", kws: ["spanok", "spánok", "nespavost", "insomnia", "zaspavat", "zaspávat", "relax", "ukludnit", "ukľudniť"] },
+    { key: "stress", kws: ["stres", "anx", "uzkost", "úzkosť", "napatie", "napätie", "nervy"] },
+    { key: "energy", kws: ["energia", "energiu", "unava", "únava", "nakopnut", "nakopnúť", "motivacia", "motivácia"] },
+    { key: "focus", kws: ["focus", "sustredenie", "sústredenie", "pozornost", "pozornosť", "mozog", "pamät", "pamat"] },
+    { key: "immunity", kws: ["imunita", "nachladnutie", "prechladnutie", "choroba", "odporucnost", "odolnost", "antioxid"] },
+    { key: "keto", kws: ["keto", "ketogene", "ketogén", "low carb", "lowcarb"] },
+    { key: "protein", kws: ["protein", "proteín", "srvátka", "whey", "kazein", "kazeín", "gainer"] },
+    { key: "testosterone", kws: ["testosteron", "testosterón", "libido", "vykon", "výkon"] },
+    { key: "cbd", kws: ["cbd", "konopi", "konope", "hemp", "full spectrum"] },
+  ];
 
-  for (const p of PRODUCTS) {
-    const pTags = (p.tags || []).map(normalize);
-    let score = 0;
-    for (const t of tags) {
-      if (pTags.includes(t)) score += 2;
-      // soft contains
-      if (pTags.some((x) => x.includes(t) || t.includes(x))) score += 1;
-    }
-    // tie-breaker: if product has "bestseller" tag
-    if (pTags.includes("bestseller")) score += 1;
+  for (const g of goals) {
+    if (g.kws.some((k) => t.includes(normalize(k)))) return g.key;
+  }
+  return "";
+}
 
-    if (score > bestScore) {
-      bestScore = score;
-      best = p;
+function detectIntent(message) {
+  const t = normalize(message);
+
+  const orderHelp = ["doprava", "dorucenie", "doručenie", "platba", "reklamacia", "reklamácia", "objednavka", "objednávka", "faktura", "faktúra", "vratenie", "vrátenie", "stav objednavky", "tracking", "balik"];
+  if (hasAny(t, orderHelp)) return "order_help";
+
+  // product_search: keď hľadá typ/konkrétny produkt
+  const productSignals = [
+    "hladam", "hľadám", "chcem", "mate", "máte", "odporuc", "odporúč",
+    "instant", "mleta", "mletá", "zrnk", "bez kofeinu", "decaf", "kava", "káva",
+    "reishi", "lion", "cordy", "chaga", "ashwa", "matcha", "kakao", "cokolada", "čokoláda",
+    "najpredavanejsia", "najpredávanejšia", "best seller", "top"
+  ];
+  if (hasAny(t, productSignals) && hasAny(t, ["kava", "káva", "cbd", "protein", "proteín", "matcha", "kakao", "cokolada", "čokoláda"])) {
+    return "product_search";
+  }
+
+  // benefit_goal: keď rieši cieľ
+  const goal = extractGoal(message);
+  if (goal) return "benefit_goal";
+
+  return "general";
+}
+
+function scoreProduct(product, message, goal) {
+  const t = normalize(message);
+  let s = 0;
+
+  // goal match
+  if (goal && (product.goals || []).includes(goal)) s += 8;
+
+  // keyword match
+  const kws = product.keywords || [];
+  for (const k of kws) {
+    if (normalize(k) && t.includes(normalize(k))) s += 2;
+  }
+
+  // format match
+  if (t.includes("instant") && (product.formats || []).includes("instant")) s += 4;
+  if (t.includes("mleta") || t.includes("mlet") ) {
+    if ((product.formats || []).includes("mleta")) s += 3;
+  }
+  if (t.includes("zrnk") && (product.formats || []).includes("zrnkova")) s += 3;
+
+  // caffeine preference
+  if (t.includes("bez kofe") || t.includes("decaf")) {
+    if (product.caffeine === "no") s += 3;
+    if (product.caffeine === "yes") s -= 2;
+  }
+
+  // best seller boost
+  if (product.bestSeller) s += 2;
+
+  return s;
+}
+
+function pickTopProducts(message, goal, limit = 2) {
+  const scored = PRODUCTS
+    .map((p) => ({ p, s: scoreProduct(p, message, goal) }))
+    .sort((a, b) => b.s - a.s);
+
+  // vždy niečo vráť – aj keď score 0, dáme bestsellery
+  const top = scored.filter((x) => x.s > 0).slice(0, limit).map((x) => x.p);
+  if (top.length) return top;
+
+  const fallback = PRODUCTS.filter((p) => p.bestSeller).slice(0, limit);
+  if (fallback.length) return fallback;
+
+  return PRODUCTS.slice(0, limit);
+}
+
+function formatReply({ intro, products, ask, closing }) {
+  let out = "";
+  if (intro) out += `${intro}\n\n`;
+
+  if (products && products.length) {
+    out += `Odporúčam:\n`;
+    for (const p of products) {
+      out += `👉 ${p.title}\n${p.url}\n`;
+      if (p.oneLiner) out += `${p.oneLiner}\n`;
+      out += `\n`;
     }
   }
 
-  // ak nič netrafil, vráť prvý
-  if (!best || bestScore <= 0) return PRODUCTS[0];
-  return best;
+  if (ask) out += `${ask}\n\n`;
+  if (closing) out += `${closing}`.trim();
+
+  return out.trim();
 }
 
-function formatRecommendation(product, extraText = "") {
-  if (!product) {
-    return `Technická poznámka: zatiaľ nemám načítané produkty. Skús prosím o chvíľu znova.`;
-  }
+// ===== OpenAI fallback pre GENERAL & ORDER_HELP (keď nemáme odpoveď v pravidlách) =====
+async function askOpenAI({ message }) {
+  if (!OPENAI_API_KEY) return "";
 
-  const name = product.name || "Odporúčaný produkt";
-  const url = product.url || "";
-  const pitch = product.pitch ? `\n\n${product.pitch}` : "";
-  const extra = extraText ? `\n\n${extraText}` : "";
+  const system = `
+Si Claudia – poradkyňa e-shopu ANiLab. Píš prirodzene po slovensky, krátko a vecne.
+Cieľ: pomôcť zákazníkovi vybrať produkt a zvýšiť konverziu.
+Pravidlá:
+- Nehovor, že si AI alebo model.
+- Keď odporúčaš produkt, napíš názov + klikateľný link (ak ho máš).
+- Nepýtaj sa dookola. Max 1 doplňujúca otázka, potom odporuč.
+- Zdravotné tvrdenia formuluj bezpečne: "podpora", "pre pohodu", neuvádzaj liečenie chorôb.
+`;
 
-  return `Odporúčam:\n👉 ${name}\n${url}${pitch}${extra}`;
-}
+  const payload = {
+    model: OPENAI_MODEL,
+    temperature: 0.6,
+    messages: [
+      { role: "system", content: system.trim() },
+      { role: "user", content: message },
+    ],
+  };
 
-// memory: last intent per visitor (simple in-memory)
-const lastIntentBySession = new Map();
-
-// Very simple session id from client (optional). If none, fallback to IP.
-function getSessionId(req) {
-  const hdr = req.headers["x-session-id"];
-  if (hdr && typeof hdr === "string" && hdr.length < 100) return hdr;
-  return req.ip || "unknown";
-}
-
-// ===== Health check =====
-app.get("/health", (req, res) => {
-  res.json({
-    ok: true,
-    productsLoaded: PRODUCTS.length,
-    time: new Date().toISOString(),
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify(payload),
   });
-});
-app.get("/products", (req, res) => {
-  res.json(PRODUCTS);
-});
 
-// ===== Products endpoint (debug) =====
-app.get("/products", (req, res) => {
-  res.json(PRODUCTS);
-});
+  if (!res.ok) return "";
+  const data = await res.json();
+  return data?.choices?.[0]?.message?.content?.trim() || "";
+}
 
-// ===== Main chat endpoint =====
-app.post("/chat", (req, res) => {
-  const sessionId = getSessionId(req);
-  const msgRaw = req.body?.message || "";
-  const msg = normalize(msgRaw);
+// ===== ROUTE =====
+app.post("/chat", async (req, res) => {
+  try {
+    const msg = (req.body?.message || "").toString().trim();
+    const sessionId = (req.body?.sessionId || req.ip || "anon").toString();
 
-  // 0) Basic guards
-  if (!msg.trim()) {
-    return res.json({
-      reply:
-        "Napíš mi prosím, čo riešiš: stres/spánok, energia, focus/mozog, imunita, keto, proteín, testosterón alebo CBD – a dám ti konkrétny produkt s linkom.",
+    if (!msg) return res.json({ reply: "Napíš mi prosím, čo hľadáš 🙂" });
+
+    const session = getSession(sessionId);
+    const goal = extractGoal(msg);
+    const intent = detectIntent(msg);
+
+    session.lastIntent = intent;
+    if (goal) session.lastGoal = goal;
+
+    // 1) PRODUCT_SEARCH: vždy odporuč hneď, bez dotazníka
+    if (intent === "product_search") {
+      const prods = pickTopProducts(msg, goal, 2);
+
+      const ask = (() => {
+        // len jemná otázka, ale odporúčanie už má
+        if (!hasAny(msg, ["instant", "mleta", "mletá", "zrnk", "bez kofe", "decaf"])) {
+          return "Chceš to skôr instant / mletú / zrnkovú – alebo bez kofeínu?";
+        }
+        return "";
+      })();
+
+      const reply = formatReply({
+        intro: "Rozumiem 🙂 Vybral som ti najbližšie tipy podľa toho, čo píšeš:",
+        products: prods,
+        ask,
+        closing: "Ak mi napíšeš formu (instant/mletá/zrnková) doladím to na 100%."
+      });
+
+      return res.json({ reply });
+    }
+
+    // 2) BENEFIT_GOAL: aj tu odporuč hneď + 1 otázka max
+    if (intent === "benefit_goal") {
+      const g = goal || session.lastGoal || "";
+      const prods = pickTopProducts(msg, g, 2);
+
+      // aby sa neopakovalo donekonečna:
+      let ask = "";
+      if (!session.askedOnce) {
+        ask = "Chceš skôr kávu, čaj, alebo kapsule? (Stačí jedno slovo)";
+        session.askedOnce = true;
+      }
+
+      const reply = formatReply({
+        intro: "Jasné 🙂 Tu sú 2 rýchle odporúčania na tvoj cieľ:",
+        products: prods,
+        ask,
+        closing: "Ak mi povieš formu (káva/čaj/kapsule), vyberiem ti najpresnejší TOP produkt."
+      });
+
+      return res.json({ reply });
+    }
+
+    // 3) ORDER_HELP: skús OpenAI, ale stručne
+    if (intent === "order_help") {
+      const ai = await askOpenAI({ message: msg });
+      if (ai) return res.json({ reply: ai });
+      return res.json({ reply: "Napíš prosím, či riešiš dopravu, platbu alebo stav objednávky – a hneď ti poviem čo spraviť." });
+    }
+
+    // 4) GENERAL: keď je príliš všeobecné, stále odporuč aspoň bestseller + otázka
+    const prods = pickTopProducts(msg, goal, 1);
+
+    // Ak sa už raz pýtal a user stále píše neurčito, necykli – daj ďalší tip
+    const follow = session.askedOnce
+      ? "Ak chceš, napíš: energia / spánok / stres / focus / imunita – a dám ti najlepší konkrétny match."
+      : "Je to skôr energia, spánok, stres, focus alebo imunita? (Stačí 1 slovo)";
+
+    session.askedOnce = true;
+
+    const reply = formatReply({
+      intro: "Aby som ti hneď pomohla, toto je najčastejšia voľba zákazníkov:",
+      products: prods,
+      ask: follow,
+      closing: ""
     });
+
+    return res.json({ reply });
+  } catch (e) {
+    console.error(e);
+    return res.json({ reply: "Technická chyba. Skús prosím o chvíľu 🙂" });
   }
-
-  // 1) Quick “link” request -> use last known intent
-  const isJustLink =
-    hasAny(msg, ["posli link", "pošli link", "link", "odkaz", "url"]) &&
-    msg.length <= 40;
-
-  if (isJustLink) {
-    const last = lastIntentBySession.get(sessionId) || "stres_spanok";
-    const product = pickProductForIntent(last);
-    return res.json({ reply: formatRecommendation(product) });
-  }
-
-  // 2) Detect intent
-  const intent = detectIntent(msg);
-
-  // store
-  if (intent) lastIntentBySession.set(sessionId, intent);
-
-  // 3) If intent unknown -> respond like real advisor (NO MENU)
-
-}
-
-
-  // 4) Recommend product for intent
-  const product = pickProductForIntent(intent);
-
-  // 5) Add B2B lead trigger (soft)
-  const b2bHint = hasAny(msg, [
-    "b2b",
-    "velkoobchod",
-    "veľkoobchod",
-    "distrib",
-    "retazec",
-    "reťazec",
-    "gym",
-    "shop",
-    "eshop",
-    "e-shop",
-    "private label",
-    "privatna znacka",
-    "privátna značka",
-    "odber",
-    "odberat",
-    "odberateľ",
-    "faktura",
-    "faktúra",
-    "ico",
-    "ičo",
-    "dic",
-    "dič",
-  ]);
-
-  const extra =
-    b2bHint
-      ? "Ak to riešiš pre firmu (B2B / private label / veľkoobchod), napíš prosím krajinu + približný mesačný odber a pošlem ti ďalší krok."
-      : "Ak chceš, napíš či preferuješ mletú / zrnkovú / instant – a dám najpresnejšiu verziu.";
-
-  return res.json({
-    reply: formatRecommendation(product, extra),
-  });
 });
 
-// ===== Intent detection =====
-function detectIntent(msg) {
-  // stres/spánok
-  if (
-    hasAny(msg, [
-      "spanok",
-      "spánok",
-      "nespavost",
-      "nespavosť",
-      "stres",
-      "uzkost",
-      "úzkosť",
-      "relax",
-      "ukludnit",
-      "upokojit",
-      "večer",
-      "vecer",
-    ])
-  )
-    return "stres_spanok";
+app.get("/", (req, res) => res.send("OK"));
 
-  // energia
-  if (
-    hasAny(msg, [
-      "energia",
-      "unava",
-      "únava",
-      "rano",
-      "ráno",
-      "nakopnut",
-      "nakopnúť",
-      "vykon",
-      "výkon",
-    ])
-  )
-    return "energia";
-
-  // focus/mozog
-  if (
-    hasAny(msg, [
-      "focus",
-      "sustreden",
-      "sústreden",
-      "mozog",
-      "pamät",
-      "pamat",
-      "koncentr",
-      "nootrop",
-      "mental",
-      "mentál",
-    ])
-  )
-    return "focus_mozog";
-
-  // imunita
-  if (
-    hasAny(msg, [
-      "imunita",
-      "nachlad",
-      "nachl",
-      "choroba",
-      "vir",
-      "antioxid",
-      "obranysch",
-    ])
-  )
-    return "imunita";
-
-  // keto
-  if (hasAny(msg, ["keto", "mct", "low carb", "lowcarb"])) return "keto";
-
-  // protein
-  if (hasAny(msg, ["protein", "whey", "sval", "svaly", "gym", "fitko"]))
-    return "protein";
-
-  // testosteron
-  if (
-    hasAny(msg, [
-      "testoster",
-      "libido",
-      "muz",
-      "muž",
-      "vykonnost",
-      "výkonnosť",
-      "tonga",
-      "tongat",
-      "tribulus",
-    ])
-  )
-    return "testosteron";
-
-  // cbd
-  if (hasAny(msg, ["cbd", "konop", "hemp", "olej", "olejcek", "olejček"]))
-    return "cbd";
-
-  return null;
-}
-
-// ===== Product picking =====
-function pickProductForIntent(intent) {
-  switch (intent) {
-    case "stres_spanok":
-      return findByTags(["stres", "spanok", "relax"]);
-    case "energia":
-      return findByTags(["energia", "energy", "unava", "ráno", "rano"]);
-    case "focus_mozog":
-      return findByTags(["focus", "mozog", "pamat", "nootropika", "nootropics"]);
-    case "imunita":
-      return findByTags(["imunita", "immune"]);
-    case "keto":
-      return findByTags(["keto", "mct"]);
-    case "protein":
-      return findByTags(["protein", "whey"]);
-    case "testosteron":
-      return findByTags(["testosteron", "testosterone", "libido"]);
-    case "cbd":
-      return findByTags(["cbd", "olej"]);
-    default:
-      return PRODUCTS[0] || null;
-  }
-}
-
-// ===== Start server =====
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`anilab chatbot backend running on :${PORT}`);
-});
+app.listen(PORT, () => console.log("Server running on", PORT));
