@@ -1,0 +1,112 @@
+[
+  {
+    "id": "good_mood_stress_ground",
+    "name": "Good Mood & Stress – mletá káva",
+    "url": "https://anilab.sk/produkt/good-mood-stress-mleta-kava/?v=0b3b97fa6688",
+    "category": "coffee",
+    "form": "mleta",
+    "use_cases": ["stres", "relax", "spanok", "psychika"],
+    "keywords": ["good mood", "stress", "stres", "úzkosť", "relax", "kava", "káva", "mleta", "mletá"],
+    "priority": 10,
+    "short_pitch": "Keď potrebuješ vypnúť hlavu, znížiť stres a upokojiť sa – najpredávanejšia voľba."
+  },
+  {
+    "id": "good_mood_stress_beans",
+    "name": "Good Mood & Stress – zrnková káva",
+    "url": "https://anilab.sk/produkt/good-mood-stress-zrnkova-kava/?v=0b3b97fa6688",
+    "category": "coffee",
+    "form": "zrnková",
+    "use_cases": ["stres", "relax", "spanok", "psychika"],
+    "keywords": ["good mood", "stress", "stres", "úzkosť", "relax", "kava", "káva", "zrnková", "zrnkova", "zrnko", "zrnkovu"],
+    "priority": 10,
+    "short_pitch": "To isté zloženie, len zrnková verzia – ideálne ak si melieš kávu doma."
+  },
+  {
+    "id": "immune_support_energy_ground",
+    "name": "Immune Support & Energy – mletá káva",
+    "url": "https://anilab.sk/produkt/immune-support-energy-mleta-kava/?v=0b3b97fa6688",
+    "category": "coffee",
+    "form": "mleta",
+    "use_cases": ["energia", "imunita", "vykon"],
+    "keywords": ["immune", "imunita", "energia", "kava", "káva", "mleta", "mletá"],
+    "priority": 9,
+    "short_pitch": "Ranný štart + podpora imunity. Keď chceš energiu, ale aj stabilitu počas dňa."
+  },
+  {
+    "id": "immune_support_energy_beans",
+    "name": "Immune Support & Energy – zrnková káva",
+    "url": "https://anilab.sk/produkt/immune-support-energy-zrnkova-kava/?v=0b3b97fa6688",
+    "category": "coffee",
+    "form": "zrnková",
+    "use_cases": ["energia", "imunita", "vykon"],
+    "keywords": ["immune", "imunita", "energia", "kava", "káva", "zrnková", "zrnkova"],
+    "priority": 9,
+    "short_pitch": "Zrnková verzia pre tých, čo chcú max arómu + energiu a imunitu."
+  },
+  {
+    "id": "mental_focus_energy_ground",
+    "name": "Mental Focus & Energy – mletá káva",
+    "url": "https://anilab.sk/produkt/mental-focus-energy-mleta-kava/?v=0b3b97fa6688",
+    "category": "coffee",
+    "form": "mleta",
+    "use_cases": ["focus", "sustredenie", "energia", "praca"],
+    "keywords": ["focus", "fokus", "sústredenie", "koncentrácia", "energia", "kava", "káva", "mleta", "mletá"],
+    "priority": 9,
+    "short_pitch": "Keď potrebuješ sústredenie a čistú hlavu – ideálne na prácu a výkon."
+  },
+  {
+    "id": "mental_focus_energy_beans",
+    "name": "Mental Focus & Energy – zrnková káva",
+    "url": "https://anilab.sk/produkt/mental-focus-energy-zrnkova/?v=0b3b97fa6688",
+    "category": "coffee",
+    "form": "zrnková",
+    "use_cases": ["focus", "sustredenie", "energia", "praca"],
+    "keywords": ["focus", "fokus", "sústredenie", "koncentrácia", "energia", "kava", "káva", "zrnková", "zrnkova"],
+    "priority": 9,
+    "short_pitch": "Zrnková verzia – keď chceš fokus + top chuť z čerstvo mletej kávy."
+  },
+  {
+    "id": "cbd_oil_10",
+    "name": "CBD olej 10%",
+    "url": "https://anilab.sk/produkt/cbd-olej-10/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "cbd olej", "olej", "kvapky", "konopny", "konopie", "hemp", "spánok", "spanok", "stres", "relax", "ukludnenie"],
+    "priority": 10,
+    "short_pitch": "Najlepší štart s CBD – večerné upokojenie, stres a spánok."
+  },
+  {
+    "id": "cbd_oil_20",
+    "name": "CBD olej 20%",
+    "url": "https://anilab.sk/produkt/cbd-olej-20/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "cbd olej", "olej", "kvapky", "konopny", "konopie", "hemp", "spánok", "spanok", "stres", "relax", "silnejsi", "silnejší"],
+    "priority": 9,
+    "short_pitch": "Silnejšia verzia – keď chceš výraznejší efekt pri strese a spánku."
+  },
+  {
+    "id": "cbd_oil_30",
+    "name": "CBD olej 30%",
+    "url": "https://anilab.sk/produkt/cbd-olej-30/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["cbd", "cbd olej", "olej", "kvapky", "konopny", "konopie", "hemp", "spánok", "spanok", "stres", "relax", "najsilnejsi", "najsilnejší"],
+    "priority": 8,
+    "short_pitch": "Top koncentrácia – pre skúsených, čo vedia, že chcú silné CBD."
+  },
+  {
+    "id": "swisshempy_full_spectrum_20",
+    "name": "SwissHempy CBD Full Spectrum 20%",
+    "url": "https://anilab.sk/produkt/swisshempy-cbd-full-spectrum-20-swisshempy/?v=0b3b97fa6688",
+    "category": "cbd",
+    "form": "oil",
+    "use_cases": ["stres", "spanok", "relax"],
+    "keywords": ["swisshempy", "cbd", "full spectrum", "olej", "kvapky", "stres", "spanok", "spánok", "relax"],
+    "priority": 8,
+    "short_pitch": "Full spectrum varianta – keď chceš čo najširší profil účinku."
+  }
+]
