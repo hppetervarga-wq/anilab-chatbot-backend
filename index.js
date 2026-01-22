@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
+import nodemailer from "nodemailer";
 
-// Node 18+ má fetch natívne. Ak by si mal starší Node, treba doplniť node-fetch.
+// Node 18+ má fetch natívne.
 const app = express();
 app.use(express.json({ limit: "1mb" }));
 
@@ -24,6 +25,60 @@ allowedHeaders: ["Content-Type"],
 const PORT = process.env.PORT || 10000;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
+
+// ===== SMTP (B2B leads) =====
+const SMTP_HOST = process.env.SMTP_HOST || "";
+const SMTP_PORT = Number(process.env.SMTP_PORT || "587");
+const SMTP_USER = process.env.SMTP_USER || "";
+const SMTP_PASS = process.env.SMTP_PASS || "";
+const SMTP_FROM = process.env.SMTP_FROM || "noreply@anilab.eu";
+const B2B_TO = process.env.B2B_TO || "natalia@anilab.eu";
+
+const canSendMail = !!(SMTP_HOST && SMTP_USER && SMTP_PASS);
+
+let mailer = null;
+if (canSendMail) {
+mailer = nodemailer.createTransport({
+host: SMTP_HOST,
+port: SMTP_PORT,
+secure: SMTP_PORT === 465,
+auth: { user: SMTP_USER, pass: SMTP_PASS },
+});
+}
+
+async function sendB2BLeadEmail(lead, rawConversation = []) {
+if (!mailer) return false;
+
+const subject = `ANiLab B2B Lead – ${lead?.type || "nezadané"} – ${lead?.country || "nezadané"} – ${lead?.email || "bez emailu"}`;
+
+const lines = [
+"B2B LEAD (z web chatu)",
+"====================",
+`Typ: ${lead?.type || "-"}`,
+`Krajina / dodanie: ${lead?.country || "-"}`,
+`Produkty: ${lead?.products || "-"}`,
+`Objem / štart: ${lead?.volume || "-"}`,
+`Meno: ${lead?.name || "-"}`,
+`Firma: ${lead?.company || "-"}`,
+`Email: ${lead?.email || "-"}`,
+`Web/IG: ${lead?.web || "-"}`,
+"",
+"RAW CHAT (posledné správy):",
+"---------------------------",
+...rawConversation.slice(-12).map((x) => `- ${x}`),
+"",
+`Timestamp: ${new Date().toISOString()}`,
+];
+
+await mailer.sendMail({
+from: SMTP_FROM,
+to: B2B_TO,
+subject,
+text: lines.join("\n"),
+});
+
+return true;
+}
 
 // ===== Load products.json =====
 const productsPath = path.join(process.cwd(), "products.json");
@@ -46,7 +101,7 @@ FAQ = null;
 
 // ===== session memory =====
 const sessionStore = new Map();
-// sessionId -> { askedOnce:boolean, lastGoal:string, preferredFormat:string, lastCategory:string }
+// sessionId -> { askedOnce:boolean, lastGoal:string, preferredFormat:string, lastCategory:string, isB2B:boolean, b2bStep:number, b2bLead:object, convo:string[] }
 
 function getSession(sessionId) {
 if (!sessionStore.has(sessionId)) {
@@ -55,6 +110,19 @@ askedOnce: false,
 lastGoal: "",
 preferredFormat: "", // "zrnkova" | "mleta" | "instant" | "bez_kofeinu"
 lastCategory: "",
+isB2B: false,
+b2bStep: 0,
+b2bLead: {
+type: "",
+country: "",
+products: "",
+volume: "",
+name: "",
+company: "",
+email: "",
+web: "",
+},
+convo: [],
 });
 }
 return sessionStore.get(sessionId);
@@ -109,6 +177,150 @@ for (const g of goals) {
 if (g.kws.some((k) => t.includes(normalize(k)))) return g.key;
 }
 return "";
+}
+
+// ===== B2B detection =====
+function detectB2BIntent(message) {
+const t = normalize(message);
+
+const b2bSignals = [
+"b2b",
+"velkoobchod", "veľkoobchod", "velkoodber", "veľkoodber", "velkoodberatel", "veľkoodberateľ",
+"cennik", "cenník", "velkoobchodny cennik", "veľkoobchodný cenník", "wholesale", "pricelist",
+"distribucia", "distribúcia", "distributor",
+"reseller", "predajca", "predajňa", "retail", "reťazec", "retazec",
+"private label", "privatna znacka", "privátna značka", "white label",
+"objem", "moq", "paleta", "pallet", "karton", "kartón",
+"faktura", "faktúra", "ico", "ičo", "dic", "dič", "vat", "dph",
+"marza", "marža", "rabaty", "rabaty", "zlav", "zľav",
+"nakupna cena", "nákupná cena",
+];
+
+return hasAny(t, b2bSignals);
+}
+
+function normalizeB2BType(answer) {
+const t = normalize(answer);
+if (hasAny(t, ["private label", "privatna znacka", "privátna značka", "white label"])) return "private label";
+if (hasAny(t, ["distrib", "distributor"])) return "distribúcia";
+if (hasAny(t, ["reseller", "predajca", "predajna", "predajňa", "retail"])) return "veľkoobchod / reseller";
+if (hasAny(t, ["velkoobchod", "veľkoobchod", "wholesale"])) return "veľkoobchod";
+return answer?.toString().trim() || "";
+}
+
+function extractEmail(text) {
+const m = (text || "").match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+return m ? m[0] : "";
+}
+
+function extractWebOrIG(text) {
+const s = (text || "").toString();
+const ig = s.match(/@([a-zA-Z0-9._]+)/);
+if (ig) return `@${ig[1]}`;
+const url = s.match(/https?:\/\/[^\s]+/i);
+if (url) return url[0];
+const www = s.match(/\bwww\.[^\s]+\b/i);
+if (www) return www[0];
+return "";
+}
+
+function b2bQuestion(step) {
+if (step === 1) {
+return `Si firma alebo reseller? Vyber 1 možnosť:\n1) private label\n2) veľkoobchod / reseller\n3) distribúcia`;
+}
+if (step === 2) return "Krajina + kam chceš dodávať? (napr. SK / CZ / PL / HU / UAE…)";
+if (step === 3) return "O aké produkty máš záujem? (kategória alebo konkrétne SKU; ak nevieš, napíš len „kávy / proteíny / CBD / kapsule“)";
+if (step === 4) return "Aký približný objem na štart? (MOQ / kusy / €/mesiac – stačí odhad)";
+if (step === 5) return "Kontakt prosím: email (stačí email; voliteľne meno + firma + web/IG).";
+return "";
+}
+
+async function handleB2BFlow(session, msg) {
+// ulož posledné správy (na konci sa pošlú Natálke)
+session.convo.push(msg);
+if (session.convo.length > 30) session.convo = session.convo.slice(-30);
+
+// keď práve začíname
+if (!session.isB2B) {
+session.isB2B = true;
+session.b2bStep = 1;
+
+return `Jasné 🙂 vidím, že ide o B2B.\n\n${b2bQuestion(1)}`;
+}
+
+// step-based zber
+const step = session.b2bStep || 1;
+const lead = session.b2bLead || {};
+
+if (step === 1) {
+lead.type = normalizeB2BType(msg);
+session.b2bStep = 2;
+session.b2bLead = lead;
+return b2bQuestion(2);
+}
+
+if (step === 2) {
+lead.country = msg.toString().trim();
+session.b2bStep = 3;
+session.b2bLead = lead;
+return b2bQuestion(3);
+}
+
+if (step === 3) {
+lead.products = msg.toString().trim();
+session.b2bStep = 4;
+session.b2bLead = lead;
+return b2bQuestion(4);
+}
+
+if (step === 4) {
+lead.volume = msg.toString().trim();
+session.b2bStep = 5;
+session.b2bLead = lead;
+return b2bQuestion(5);
+}
+
+if (step === 5) {
+const email = extractEmail(msg);
+if (email) lead.email = email;
+
+// voliteľné: meno/firma/web
+if (!lead.web) lead.web = extractWebOrIG(msg);
+// jednoduchý pokus: ak niekto napíše "Meno Firma, email..."
+const cleaned = msg.replace(lead.email || "", "").trim();
+if (!lead.name && cleaned.length && cleaned.length < 80) lead.name = cleaned;
+
+session.b2bLead = lead;
+
+// musí byť aspoň email
+if (!lead.email) {
+return "Prosím pošli len email (napr. meno@firma.com).";
+}
+
+// pošli email Natálke
+let sent = false;
+try {
+sent = await sendB2BLeadEmail(lead, session.convo);
+} catch (e) {
+console.error("B2B email send error:", e);
+sent = false;
+}
+
+// reset B2B flow, aby chat mohol pokračovať aj normálne
+session.isB2B = false;
+session.b2bStep = 0;
+
+const confirm = sent
+? "Super, ďakujem 🙂 Poslala som to Natálke a ozve sa ti čo najskôr."
+: "Super, ďakujem 🙂 Mám to uložené, ale email sa nepodarilo odoslať (chýba SMTP). Pošli mi prosím ešte raz email a ja to prepíšem do systému manuálne.";
+
+// po potvrdení môžeš ešte hneď ponúknuť ďalší krok
+return `${confirm}\n\nAk chceš, napíš ešte: *koľko produktových liniek (SKU) a aký typ balenia (doypack/tubus/caps)* – urýchli to nacenenie.`;
+}
+
+// fallback
+session.b2bStep = 1;
+return b2bQuestion(1);
 }
 
 // ===== HARD Router (bez AI) =====
@@ -352,7 +564,7 @@ return draft;
 // ===== Routes =====
 app.get("/", (req, res) => res.send("OK"));
 app.get("/health", (req, res) => {
-res.json({ ok: true, products: PRODUCTS.length, faq: !!FAQ, time: new Date().toISOString() });
+res.json({ ok: true, products: PRODUCTS.length, faq: !!FAQ, time: new Date().toISOString(), canSendMail });
 });
 
 // MAIN CHAT
@@ -369,6 +581,18 @@ reply: "Ahoj, volám sa Claudia – poradkyňa ANiLab 🙂 S čím ti môžem po
 
 const session = getSession(sessionId);
 
+// log konverzácie (pre B2B email)
+session.convo.push(msg);
+if (session.convo.length > 30) session.convo = session.convo.slice(-30);
+
+// ===== 0) B2B DETEKCIA (len keď to dáva zmysel) =====
+// Ak je user už v B2B flow, alebo správa obsahuje B2B signály -> spusti B2B kvalifikáciu
+if (session.isB2B || detectB2BIntent(msg)) {
+const b2bReply = await handleB2BFlow(session, msg);
+return res.json({ reply: b2bReply });
+}
+
+// ===== 1) normálny B2C flow =====
 const pf = detectPreferredFormat(msg);
 if (pf) session.preferredFormat = pf;
 
@@ -377,17 +601,16 @@ if (goal) session.lastGoal = goal;
 
 const intent = detectIntent(msg);
 
-// 1) ORDER_HELP -> HARD FAQ, žiadne AI
+// ORDER_HELP -> HARD FAQ, žiadne AI
 if (intent === "order_help") {
 const faqReply = tryFaqAnswer(msg);
 if (faqReply) return res.json({ reply: `Jasné 🙂 ${faqReply}` });
 
-// fallback pre order_help, stále bez AI (aby si nemlel blbosti)
 const shippingUrl = (FAQ?.store?.shipping_info_url) || "https://anilab.sk";
 return res.json({ reply: `Jasné 🙂 Najpresnejšie info k doprave/platbe je tu: ${shippingUrl}` });
 }
 
-// 2) product/benefit/general -> vždy daj aspoň 1 produkt hneď
+// product/benefit/general -> vždy daj aspoň 1 produkt hneď
 const type = inferTypeFromMessage(msg);
 const g = goal || session.lastGoal || "";
 const prods = pickTopProducts(msg, g, session.preferredFormat, type === "general" ? 1 : 2);
@@ -415,5 +638,6 @@ return res.json({ reply: "Technická chyba. Skús prosím o chvíľu 🙂" });
 }
 });
 
-app.listen(PORT, () => console.log("Server running on", PORT));
-
+app.listen(PORT, () => {
+console.log(`Server running on ${PORT}`);
+});
